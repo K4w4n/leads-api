@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  app:
+    container_name: leads-api
+    restart: "always"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - network-leads
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    volumes:
+      - .:/home/app
+
+  db:
+    container_name: leads-mysql
+    image: mysql:8.2
+    restart: "always"
+    environment:
+      - MYSQL_DATABASE=leads
+      - MYSQL_ROOT_PASSWORD=default
+    ports:
+      - 3307:3306
+    expose:
+      - '3306'
+    networks:
+      - network-leads
+    volumes:
+      - database-leads:/var/lib/mysql
+
+networks:
+  network-leads:
+      name: default-network-leads
+
+volumes:
+  database-leads:
